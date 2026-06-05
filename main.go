@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"forum_valorant/config"
+	"forum-valorant/config"
 )
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
