@@ -38,19 +38,21 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			authController.ShowLogin(w, r)
+		}
+
+		if r.Method == http.MethodPost {
+			authController.Login(w, r)
+		}
+	})
+
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	fmt.Println("Serveur lancé sur http://localhost:8080")
 	fmt.Println("FT1 sur http://localhost:8080/register")
+	fmt.Println("FT2 sur http://localhost:8080/login")
+
 	http.ListenAndServe(":8080", nil)
 }
-
-http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		authController.ShowLogin(w, r)
-	}
-
-	if r.Method == http.MethodPost {
-		authController.Login(w, r)
-	}
-})
