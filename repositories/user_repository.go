@@ -17,7 +17,7 @@ func (r *UserRepository) CreateUser(user models.User) error {
 
 	query := `
 	INSERT INTO users
-	(username, email, password, role, is_banned)
+	(username, email, password, role, banned)
 	VALUES (?, ?, ?, ?, ?)
 	`
 
