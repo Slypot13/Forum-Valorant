@@ -32,3 +32,25 @@ func (r *UserRepository) CreateUser(user models.User) error {
 
 	return err
 }
+
+func (r *UserRepository) FindByIdentifier(identifier string) (models.User, error) {
+	var user models.User
+
+	query := `
+	SELECT id, username, email, password, role, banned, created_at
+	FROM users
+	WHERE username = ? OR email = ?
+	`
+
+	err := r.db.QueryRow(query, identifier, identifier).Scan(
+		&user.Id,
+		&user.Username,
+		&user.Email,
+		&user.Password,
+		&user.Role,
+		&user.IsBanned,
+		&user.CreatedAt,
+	)
+
+	return user, err
+}

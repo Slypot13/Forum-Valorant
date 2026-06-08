@@ -1,0 +1,30 @@
+login.html<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - Forum Valorant</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <h1>Connexion</h1>
+
+    {{if .}}
+        <p style="color: red;">{{.}}</p>
+    {{end}}
+
+    <form method="POST" action="/login">
+        <input type="text" name="identifier" placeholder="Nom d'utilisateur ou email" required>
+        <br><br>
+
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <br><br>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <br>
+    <a href="/">Retour à l'accueil</a>
+
+</body>
+</html>

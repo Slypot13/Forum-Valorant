@@ -44,3 +44,13 @@ func main() {
 	fmt.Println("FT1 sur http://localhost:8080/register")
 	http.ListenAndServe(":8080", nil)
 }
+
+http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		authController.ShowLogin(w, r)
+	}
+
+	if r.Method == http.MethodPost {
+		authController.Login(w, r)
+	}
+})
