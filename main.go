@@ -99,11 +99,6 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	fmt.Println("Serveur lancé sur http://localhost:8080")
-	fmt.Println("Accueil : http://localhost:8080")
-	fmt.Println("Inscription : http://localhost:8080/register")
-	fmt.Println("Connexion : http://localhost:8080/login")
-	fmt.Println("Créer un sujet : http://localhost:8080/threads/create")
-	fmt.Println("Voir un sujet : http://localhost:8080/threads/view?id=1")
 
 	http.ListenAndServe(":8080", nil)
 }
