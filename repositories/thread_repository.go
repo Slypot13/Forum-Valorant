@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+
 	"forum-valorant/models"
 )
 
@@ -39,4 +40,65 @@ func (r *ThreadRepository) CreateThread(thread models.Thread) (int, error) {
 	}
 
 	return int(id), nil
+}
+
+func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
+	var threads []models.Thread
+
+	query := `
+	SELECT id, title, content, status, user_id, created_at
+	FROM threads
+	WHERE status != 'archivé'
+	ORDER BY created_at DESC
+	`
+
+	rows, err := r.db.Query(query)
+
+	if err != nil {
+		return threads, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var thread models.Thread
+
+		err := rows.Scan(
+			&thread.Id,
+			&thread.Title,
+			&thread.Content,
+			&thread.Status,
+			&thread.UserId,
+			&thread.CreatedAt,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		threads = append(threads, thread)
+	}
+
+	return threads, nil
+}
+
+func (r *ThreadRepository) ReadById(id int) (models.Thread, error) {
+	var thread models.Thread
+
+	query := `
+	SELECT id, title, content, status, user_id, created_at
+	FROM threads
+	WHERE id = ? AND status != 'archivé'
+	`
+
+	err := r.db.QueryRow(query, id).Scan(
+		&thread.Id,
+		&thread.Title,
+		&thread.Content,
+		&thread.Status,
+		&thread.UserId,
+		&thread.CreatedAt,
+	)
+
+	return thread, err
 }

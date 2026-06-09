@@ -14,7 +14,7 @@ body::before {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 65%;
-    opacity: 0.35;
+    opacity: 0.06;
     z-index: -1;
 }
 
@@ -140,6 +140,15 @@ body::before {
     color: #d1d5db;
 }
 
+.post-title {
+    color: white;
+    text-decoration: none;
+}
+
+.post-title:hover {
+    color: #ff4655;
+}
+
 .tags span {
     background-color: #263241;
     color: #ff4655;
@@ -158,4 +167,41 @@ body::before {
     border-radius: 6px;
     text-decoration: none;
     margin-top: 15px;
+}
+
+.empty-message {
+    background-color: rgba(17, 24, 39, 0.92);
+    border: 1px solid #263241;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+}
+
+.empty-message a {
+    color: #ff4655;
+    text-decoration: none;
+}
+
+.thread-detail-container {
+    width: 70%;
+    margin: 40px auto;
+}
+
+.thread-detail {
+    background-color: rgba(17, 24, 39, 0.92);
+    border: 1px solid #263241;
+    border-radius: 8px;
+    padding: 25px;
+}
+
+.thread-detail h1 {
+    color: white;
+    margin-top: 10px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #ff4655;
+    text-decoration: none;
 }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}} - Valoroom</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo">Valoroom</div>
+
+    <nav>
+        <a href="/">Accueil</a>
+        <a href="/threads/create">Créer</a>
+        <a href="/login">Connexion</a>
+        <a href="/register">Inscription</a>
+    </nav>
+</header>
+
+<div class="thread-detail-container">
+
+    <article class="thread-detail">
+        <p class="meta">
+            Créé par utilisateur #{{.UserId}} · {{.CreatedAt}} · état : {{.Status}}
+        </p>
+
+        <h1>{{.Title}}</h1>
+
+        <p>{{.Content}}</p>
+    </article>
+
+    <a class="back-link" href="/">Retour à l'accueil</a>
+
+</div>
+
+</body>
+</html>

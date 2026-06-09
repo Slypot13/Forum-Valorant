@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+
 	"forum-valorant/models"
 	"forum-valorant/repositories"
 )
@@ -35,4 +36,12 @@ func (s *ThreadService) CreateThread(title string, content string, userId int) e
 	_, err := s.threadRepository.CreateThread(thread)
 
 	return err
+}
+
+func (s *ThreadService) GetVisibleThreads() ([]models.Thread, error) {
+	return s.threadRepository.ReadVisibleThreads()
+}
+
+func (s *ThreadService) GetThreadById(id int) (models.Thread, error) {
+	return s.threadRepository.ReadById(id)
 }

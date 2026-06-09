@@ -11,11 +11,6 @@ import (
 	"forum-valorant/services"
 )
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
-	tmpl.Execute(w, nil)
-}
-
 func main() {
 	config.LoadEnv()
 
@@ -30,44 +25,71 @@ func main() {
 	threadService := services.InitThreadService(threadRepository)
 	threadController := controllers.InitThreadController(threadService)
 
-	http.HandleFunc("/", homeHandler)
-
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			authController.ShowRegister(w, r)
+			return
 		}
 
 		if r.Method == http.MethodPost {
 			authController.Register(w, r)
+			return
 		}
 	})
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			authController.ShowLogin(w, r)
+			return
 		}
 
 		if r.Method == http.MethodPost {
 			authController.Login(w, r)
+			return
 		}
 	})
 
 	http.HandleFunc("/threads/create", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			threadController.ShowCreateThread(w, r)
+			return
 		}
 
 		if r.Method == http.MethodPost {
 			threadController.CreateThread(w, r)
+			return
 		}
+	})
+
+	http.HandleFunc("/threads/view", func(w http.ResponseWriter, r *http.Request) {
+		threadController.ShowThreadDetail(w, r)
+	})
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+
+		threads, err := threadService.GetVisibleThreads()
+
+		if err != nil {
+			http.Error(w, "Erreur lors du chargement des sujets", http.StatusInternalServerError)
+			return
+		}
+
+		tmpl := template.Must(template.ParseFiles("templates/index.html"))
+		tmpl.Execute(w, threads)
 	})
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	fmt.Println("Serveur lancé sur http://localhost:8080")
-	fmt.Println("FT1 inscription : http://localhost:8080/register")
-	fmt.Println("FT2 connexion : http://localhost:8080/login")
-	fmt.Println("FT3 création fil : http://localhost:8080/threads/create")
+	fmt.Println("Accueil : http://localhost:8080")
+	fmt.Println("Inscription : http://localhost:8080/register")
+	fmt.Println("Connexion : http://localhost:8080/login")
+	fmt.Println("Créer un sujet : http://localhost:8080/threads/create")
+	fmt.Println("Voir un sujet : http://localhost:8080/threads/view?id=1")
 
 	http.ListenAndServe(":8080", nil)
 }

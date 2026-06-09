@@ -30,47 +30,47 @@
     </aside>
 
     <main class="feed">
+
         <div class="create-box">
             <a href="/threads/create">Créer une nouvelle discussion</a>
         </div>
 
-        <article class="post-card">
-            <div class="votes">
-                <span>▲</span>
-                <strong>12</strong>
-                <span>▼</span>
-            </div>
+        {{if .}}
 
-            <div class="post-content">
-                <p class="meta">Posté par Axelle · il y a 2h</p>
-                <h2>Quel agent choisir pour débuter ?</h2>
-                <p>Je débute Valorant, vous conseillez quel agent pour apprendre tranquillement ?</p>
-
-                <div class="tags">
-                    <span>#Agents</span>
-                    <span>#Débutant</span>
+            {{range .}}
+            <article class="post-card">
+                <div class="votes">
+                    <span>▲</span>
+                    <strong>0</strong>
+                    <span>▼</span>
                 </div>
-            </div>
-        </article>
 
-        <article class="post-card">
-            <div class="votes">
-                <span>▲</span>
-                <strong>8</strong>
-                <span>▼</span>
-            </div>
+                <div class="post-content">
+                    <p class="meta">Créé par utilisateur #{{.UserId}} · {{.CreatedAt}}</p>
 
-            <div class="post-content">
-                <p class="meta">Posté par SovaMain · il y a 5h</p>
-                <h2>Meilleure stratégie sur Ascent</h2>
-                <p>Vous jouez comment en attaque sur Ascent ?</p>
+                    <a class="post-title" href="/threads/view?id={{.Id}}">
+                        <h2>{{.Title}}</h2>
+                    </a>
 
-                <div class="tags">
-                    <span>#Maps</span>
-                    <span>#Stratégie</span>
+                    <p>{{.Content}}</p>
+
+                    <div class="tags">
+                        <span>#Valorant</span>
+                        <span>#Discussion</span>
+                    </div>
                 </div>
+            </article>
+            {{end}}
+
+        {{else}}
+
+            <div class="empty-message">
+                <p>Aucun sujet pour le moment.</p>
+                <a href="/threads/create">Créer le premier sujet</a>
             </div>
-        </article>
+
+        {{end}}
+
     </main>
 
     <aside class="right-sidebar">
