@@ -26,6 +26,10 @@ func main() {
 	userService := services.InitUserService(userRepository)
 	authController := controllers.InitAuthController(userService)
 
+	threadRepository := repositories.InitThreadRepository(db)
+	threadService := services.InitThreadService(threadRepository)
+	threadController := controllers.InitThreadController(threadService)
+
 	http.HandleFunc("/", homeHandler)
 
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
@@ -48,11 +52,22 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/threads/create", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			threadController.ShowCreateThread(w, r)
+		}
+
+		if r.Method == http.MethodPost {
+			threadController.CreateThread(w, r)
+		}
+	})
+
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	fmt.Println("Serveur lancé sur http://localhost:8080")
-	fmt.Println("FT1 sur http://localhost:8080/register")
-	fmt.Println("FT2 sur http://localhost:8080/login")
+	fmt.Println("FT1 inscription : http://localhost:8080/register")
+	fmt.Println("FT2 connexion : http://localhost:8080/login")
+	fmt.Println("FT3 création fil : http://localhost:8080/threads/create")
 
 	http.ListenAndServe(":8080", nil)
 }

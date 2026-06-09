@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau sujet</title>
+</head>
+<body>
+
+<h1>Créer un fil de discussion</h1>
+
+{{if .}}
+<p style="color:red;">{{.}}</p>
+{{end}}
+
+<form method="POST" action="/threads/create">
+
+    <input
+        type="text"
+        name="title"
+        placeholder="Titre du sujet"
+        required
+    >
+
+    <br><br>
+
+    <textarea
+        name="content"
+        rows="8"
+        cols="50"
+        placeholder="Contenu du sujet"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Créer le sujet
+    </button>
+
+</form>
+
+</body>
+</html>
