@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{{.Title}} - Valoroom</title>
+    <title>{{.Thread.Title}} - Valoroom</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -22,13 +22,58 @@
 
     <article class="thread-detail">
         <p class="meta">
-            Créé par utilisateur #{{.UserId}} · {{.CreatedAt}} · état : {{.Status}}
+            Créé par utilisateur #{{.Thread.UserId}} · {{.Thread.CreatedAt}} · état : {{.Thread.Status}}
         </p>
 
-        <h1>{{.Title}}</h1>
+        <h1>{{.Thread.Title}}</h1>
 
-        <p>{{.Content}}</p>
+        <p>{{.Thread.Content}}</p>
     </article>
+
+    <section class="messages-section">
+        <h2>Messages</h2>
+
+        {{if .Messages}}
+
+            {{range .Messages}}
+            <div class="message-card">
+                <p class="meta">
+                    Message de l'utilisateur #{{.UserId}} · {{.CreatedAt}}
+                </p>
+
+                <p>{{.Content}}</p>
+            </div>
+            {{end}}
+
+        {{else}}
+
+            <p class="empty-message">Aucun message pour le moment.</p>
+
+        {{end}}
+    </section>
+
+    {{if eq .Thread.Status "ouvert"}}
+    <section class="reply-section">
+        <h2>Répondre au sujet</h2>
+
+        <form method="POST" action="/messages/create">
+            <input type="hidden" name="thread_id" value="{{.Thread.Id}}">
+
+            <textarea
+                name="content"
+                rows="5"
+                placeholder="Écris ton message..."
+                required
+            ></textarea>
+
+            <br><br>
+
+            <button type="submit">Publier</button>
+        </form>
+    </section>
+    {{else}}
+        <p class="empty-message">Ce fil est fermé ou archivé, il n'accepte plus de messages.</p>
+    {{end}}
 
     <a class="back-link" href="/">Retour à l'accueil</a>
 

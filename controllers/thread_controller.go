@@ -5,17 +5,25 @@ import (
 	"net/http"
 	"strconv"
 
+	"forum-valorant/models"
 	"forum-valorant/services"
 )
 
 type ThreadController struct {
-	threadService *services.ThreadService
+	threadService  *services.ThreadService
+	messageService *services.MessageService
 }
 
-func InitThreadController(threadService *services.ThreadService) *ThreadController {
+func InitThreadController(threadService *services.ThreadService, messageService *services.MessageService) *ThreadController {
 	return &ThreadController{
-		threadService: threadService,
+		threadService:  threadService,
+		messageService: messageService,
 	}
+}
+
+type ThreadDetailPage struct {
+	Thread   models.Thread
+	Messages []models.Message
 }
 
 func (c *ThreadController) ShowCreateThread(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +77,18 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	messages, err := c.messageService.GetMessagesByThreadId(id)
+
+	if err != nil {
+		http.Error(w, "Erreur lors du chargement des messages", http.StatusInternalServerError)
+		return
+	}
+
+	page := ThreadDetailPage{
+		Thread:   thread,
+		Messages: messages,
+	}
+
 	tmpl, err := template.ParseFiles("templates/thread_detail.html")
 
 	if err != nil {
@@ -76,7 +96,7 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = tmpl.Execute(w, thread)
+	err = tmpl.Execute(w, page)
 
 	if err != nil {
 		http.Error(w, "Erreur affichage template", http.StatusInternalServerError)

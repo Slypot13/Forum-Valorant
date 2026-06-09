@@ -23,7 +23,12 @@ func main() {
 
 	threadRepository := repositories.InitThreadRepository(db)
 	threadService := services.InitThreadService(threadRepository)
-	threadController := controllers.InitThreadController(threadService)
+
+	messageRepository := repositories.InitMessageRepository(db)
+	messageService := services.InitMessageService(messageRepository, threadRepository)
+
+	threadController := controllers.InitThreadController(threadService, messageService)
+	messageController := controllers.InitMessageController(messageService)
 
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
@@ -63,6 +68,15 @@ func main() {
 
 	http.HandleFunc("/threads/view", func(w http.ResponseWriter, r *http.Request) {
 		threadController.ShowThreadDetail(w, r)
+	})
+
+	http.HandleFunc("/messages/create", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			messageController.CreateMessage(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

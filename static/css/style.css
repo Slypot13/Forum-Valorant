@@ -187,11 +187,14 @@ body::before {
     margin: 40px auto;
 }
 
-.thread-detail {
+.thread-detail,
+.messages-section,
+.reply-section {
     background-color: rgba(17, 24, 39, 0.92);
     border: 1px solid #263241;
     border-radius: 8px;
     padding: 25px;
+    margin-top: 20px;
 }
 
 .thread-detail h1 {
@@ -199,9 +202,49 @@ body::before {
     margin-top: 10px;
 }
 
+.message-card {
+    background-color: rgba(31, 41, 55, 0.95);
+    border-left: 4px solid #ff4655;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+.message-card p {
+    color: #d1d5db;
+}
+
+.reply-section textarea {
+    width: 100%;
+    background-color: #0f1923;
+    color: white;
+    border: 1px solid #263241;
+    border-radius: 6px;
+    padding: 12px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.reply-section button {
+    background-color: #ff4655;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.reply-section button:hover {
+    background-color: #d93645;
+}
+
 .back-link {
     display: inline-block;
     margin-top: 20px;
     color: #ff4655;
     text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
 }
