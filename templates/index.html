@@ -2,23 +2,85 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Forum Valorant</title>
+    <title>Valoroom - Forum Valorant</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-    <h1>Forum Valorant</h1>
-    <p>Bienvenue sur notre plateforme communautaire dédiée à Valorant.</p>
+<header class="topbar">
+    <div class="logo">Valoroom</div>
 
     <nav>
-        <a href="/register">Créer un compte</a>
-        <br><br>
-
-        <a href="/login">Se connecter</a>
-        <br><br>
-
-        <a href="/threads/create">Créer un sujet</a>
+        <a href="/">Accueil</a>
+        <a href="/threads/create">Créer</a>
+        <a href="/login">Connexion</a>
+        <a href="/register">Inscription</a>
     </nav>
+</header>
+
+<div class="layout">
+
+    <aside class="left-sidebar">
+        <h3>Catégories</h3>
+        <a href="#">Agents</a>
+        <a href="#">Maps</a>
+        <a href="#">Gameplay</a>
+        <a href="#">Esport</a>
+        <a href="#">Débutants</a>
+    </aside>
+
+    <main class="feed">
+        <div class="create-box">
+            <a href="/threads/create">Créer une nouvelle discussion</a>
+        </div>
+
+        <article class="post-card">
+            <div class="votes">
+                <span>▲</span>
+                <strong>12</strong>
+                <span>▼</span>
+            </div>
+
+            <div class="post-content">
+                <p class="meta">Posté par Axelle · il y a 2h</p>
+                <h2>Quel agent choisir pour débuter ?</h2>
+                <p>Je débute Valorant, vous conseillez quel agent pour apprendre tranquillement ?</p>
+
+                <div class="tags">
+                    <span>#Agents</span>
+                    <span>#Débutant</span>
+                </div>
+            </div>
+        </article>
+
+        <article class="post-card">
+            <div class="votes">
+                <span>▲</span>
+                <strong>8</strong>
+                <span>▼</span>
+            </div>
+
+            <div class="post-content">
+                <p class="meta">Posté par SovaMain · il y a 5h</p>
+                <h2>Meilleure stratégie sur Ascent</h2>
+                <p>Vous jouez comment en attaque sur Ascent ?</p>
+
+                <div class="tags">
+                    <span>#Maps</span>
+                    <span>#Stratégie</span>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <aside class="right-sidebar">
+        <h3>À propos</h3>
+        <p>Valoroom est un forum communautaire autour de Valorant.</p>
+
+        <a class="side-button" href="/threads/create">Créer un sujet</a>
+    </aside>
+
+</div>
 
 </body>
 </html>
