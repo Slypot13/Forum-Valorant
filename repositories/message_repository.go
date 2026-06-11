@@ -35,10 +35,26 @@ func (r *MessageRepository) ReadByThreadId(threadId int) ([]models.Message, erro
 	var messages []models.Message
 
 	query := `
-	SELECT id, content, thread_id, user_id, created_at
-	FROM messages
-	WHERE thread_id = ?
-	ORDER BY created_at DESC
+	SELECT
+		m.id,
+		m.content,
+		m.thread_id,
+		m.user_id,
+		m.created_at,
+		COALESCE(
+			SUM(
+				CASE
+					WHEN r.type = 'like' THEN 1
+					WHEN r.type = 'dislike' THEN -1
+					ELSE 0
+				END
+			),
+		0) AS score
+	FROM messages m
+	LEFT JOIN reactions r ON m.id = r.message_id
+	WHERE m.thread_id = ?
+	GROUP BY m.id, m.content, m.thread_id, m.user_id, m.created_at
+	ORDER BY score DESC
 	`
 
 	rows, err := r.db.Query(query, threadId)
@@ -58,6 +74,7 @@ func (r *MessageRepository) ReadByThreadId(threadId int) ([]models.Message, erro
 			&message.ThreadId,
 			&message.UserId,
 			&message.CreatedAt,
+			&message.Score,
 		)
 
 		if err != nil {

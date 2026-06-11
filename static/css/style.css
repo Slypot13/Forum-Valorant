@@ -14,7 +14,7 @@ body::before {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 65%;
-    opacity: 0.35;
+    opacity: 0.06;
     z-index: -1;
 }
 
@@ -236,6 +236,38 @@ body::before {
 
 .reply-section button:hover {
     background-color: #d93645;
+}
+
+.reaction-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.reaction-bar form {
+    margin: 0;
+}
+
+.reaction-bar button {
+    background: none;
+    border: none;
+    color: #d1d5db;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.reaction-bar button:hover {
+    color: #ff4655;
+}
+
+.score {
+    color: #d1d5db;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 22px;
+    text-align: center;
 }
 
 .back-link {

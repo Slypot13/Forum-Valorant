@@ -42,6 +42,24 @@
                 </p>
 
                 <p>{{.Content}}</p>
+
+                <div class="reaction-bar">
+                    <form method="POST" action="/reactions/create">
+                        <input type="hidden" name="message_id" value="{{.Id}}">
+                        <input type="hidden" name="thread_id" value="{{$.Thread.Id}}">
+                        <input type="hidden" name="type" value="like">
+                        <button type="submit">👍</button>
+                    </form>
+
+                    <span class="score">{{.Score}}</span>
+
+                    <form method="POST" action="/reactions/create">
+                        <input type="hidden" name="message_id" value="{{.Id}}">
+                        <input type="hidden" name="thread_id" value="{{$.Thread.Id}}">
+                        <input type="hidden" name="type" value="dislike">
+                        <button type="submit">👎</button>
+                    </form>
+                </div>
             </div>
             {{end}}
 
@@ -59,12 +77,7 @@
         <form method="POST" action="/messages/create">
             <input type="hidden" name="thread_id" value="{{.Thread.Id}}">
 
-            <textarea
-                name="content"
-                rows="5"
-                placeholder="Écris ton message..."
-                required
-            ></textarea>
+            <textarea name="content" rows="5" placeholder="Écris ton message..." required></textarea>
 
             <br><br>
 

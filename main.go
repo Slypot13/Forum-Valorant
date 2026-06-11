@@ -27,6 +27,10 @@ func main() {
 	messageRepository := repositories.InitMessageRepository(db)
 	messageService := services.InitMessageService(messageRepository, threadRepository)
 
+	reactionRepository := repositories.InitReactionRepository(db)
+	reactionService := services.InitReactionService(reactionRepository)
+	reactionController := controllers.InitReactionController(reactionService)
+
 	threadController := controllers.InitThreadController(threadService, messageService)
 	messageController := controllers.InitMessageController(messageService)
 
@@ -79,6 +83,15 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
+	http.HandleFunc("/reactions/create", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			reactionController.React(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -99,6 +112,5 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	fmt.Println("Serveur lancé sur http://localhost:8080")
-
 	http.ListenAndServe(":8080", nil)
 }
