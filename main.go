@@ -70,6 +70,29 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/threads/edit", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			threadController.ShowEditThread(w, r)
+			return
+		}
+
+		if r.Method == http.MethodPost {
+			threadController.EditThread(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})
+
+	http.HandleFunc("/threads/delete", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			threadController.DeleteThread(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})
+
 	http.HandleFunc("/threads/view", func(w http.ResponseWriter, r *http.Request) {
 		threadController.ShowThreadDetail(w, r)
 	})

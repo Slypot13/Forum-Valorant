@@ -28,6 +28,19 @@
         <h1>{{.Thread.Title}}</h1>
 
         <p>{{.Thread.Content}}</p>
+
+        <div class="manage-actions">
+            <a class="edit-button" href="/threads/edit?id={{.Thread.Id}}">
+                Modifier le sujet
+            </a>
+
+            <form method="POST" action="/threads/delete">
+                <input type="hidden" name="id" value="{{.Thread.Id}}">
+                <button class="delete-button" type="submit">
+                    Supprimer le sujet
+                </button>
+            </form>
+        </div>
     </article>
 
     <section class="messages-section">

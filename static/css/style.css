@@ -280,3 +280,38 @@ body::before {
 .back-link:hover {
     text-decoration: underline;
 }
+
+.manage-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.manage-actions form {
+    margin: 0;
+}
+
+.edit-button {
+    background-color: #263241;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+
+.edit-button:hover {
+    background-color: #374151;
+}
+
+.delete-button {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #b91c1c;
+}

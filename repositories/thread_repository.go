@@ -102,3 +102,31 @@ func (r *ThreadRepository) ReadById(id int) (models.Thread, error) {
 
 	return thread, err
 }
+
+func (r *ThreadRepository) UpdateThread(thread models.Thread) error {
+	query := `
+	UPDATE threads
+	SET title = ?, content = ?
+	WHERE id = ?
+	`
+
+	_, err := r.db.Exec(
+		query,
+		thread.Title,
+		thread.Content,
+		thread.Id,
+	)
+
+	return err
+}
+
+func (r *ThreadRepository) DeleteThread(id int) error {
+	query := `
+	DELETE FROM threads
+	WHERE id = ?
+	`
+
+	_, err := r.db.Exec(query, id)
+
+	return err
+}

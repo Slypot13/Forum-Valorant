@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier le sujet - Valoroom</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo">Valoroom</div>
+
+    <nav>
+        <a href="/">Accueil</a>
+        <a href="/threads/create">Créer</a>
+        <a href="/login">Connexion</a>
+        <a href="/register">Inscription</a>
+    </nav>
+</header>
+
+<div class="thread-detail-container">
+
+    <section class="reply-section">
+        <h1>Modifier le sujet</h1>
+
+        <form method="POST" action="/threads/edit">
+            <input type="hidden" name="id" value="{{.Id}}">
+
+            <input type="text" name="title" value="{{.Title}}" required>
+
+            <br><br>
+
+            <textarea name="content" rows="8" required>{{.Content}}</textarea>
+
+            <br><br>
+
+            <button type="submit">Enregistrer</button>
+        </form>
+    </section>
+
+    <a class="back-link" href="/threads/view?id={{.Id}}">Retour au sujet</a>
+
+</div>
+
+</body>
+</html>

@@ -103,3 +103,114 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 		return
 	}
 }
+
+func (c *ThreadController) ShowEditThread(w http.ResponseWriter, r *http.Request) {
+	userId, err := services.GetUserIdFromRequest(r)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	role, err := services.GetUserRoleFromRequest(r)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	idString := r.URL.Query().Get("id")
+
+	id, err := strconv.Atoi(idString)
+
+	if err != nil {
+		http.Error(w, "Sujet introuvable", http.StatusBadRequest)
+		return
+	}
+
+	thread, err := c.threadService.GetThreadById(id)
+
+	if err != nil {
+		http.Error(w, "Sujet introuvable", http.StatusNotFound)
+		return
+	}
+
+	if thread.UserId != userId && role != "admin" {
+		http.Error(w, "Accès refusé", http.StatusForbidden)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/edit_thread.html"))
+	tmpl.Execute(w, thread)
+}
+
+func (c *ThreadController) EditThread(w http.ResponseWriter, r *http.Request) {
+	userId, err := services.GetUserIdFromRequest(r)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	role, err := services.GetUserRoleFromRequest(r)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	idString := r.FormValue("id")
+
+	id, err := strconv.Atoi(idString)
+
+	if err != nil {
+		http.Error(w, "Sujet introuvable", http.StatusBadRequest)
+		return
+	}
+
+	title := r.FormValue("title")
+	content := r.FormValue("content")
+
+	err = c.threadService.UpdateThread(id, title, content, userId, role)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	http.Redirect(w, r, "/threads/view?id="+idString, http.StatusSeeOther)
+}
+
+func (c *ThreadController) DeleteThread(w http.ResponseWriter, r *http.Request) {
+	userId, err := services.GetUserIdFromRequest(r)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	role, err := services.GetUserRoleFromRequest(r)
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	idString := r.FormValue("id")
+
+	id, err := strconv.Atoi(idString)
+
+	if err != nil {
+		http.Error(w, "Sujet introuvable", http.StatusBadRequest)
+		return
+	}
+
+	err = c.threadService.DeleteThread(id, userId, role)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
