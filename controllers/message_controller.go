@@ -7,16 +7,19 @@ import (
 	"forum-valorant/services"
 )
 
+// gère la publication de messages.
 type MessageController struct {
 	messageService *services.MessageService
 }
 
+// initialise le contrôleur.
 func InitMessageController(messageService *services.MessageService) *MessageController {
 	return &MessageController{
 		messageService: messageService,
 	}
 }
 
+// traite le formulaire de nouveau message.
 func (c *MessageController) CreateMessage(w http.ResponseWriter, r *http.Request) {
 
 	userId, err := services.GetUserIdFromRequest(r)

@@ -6,14 +6,17 @@ import (
 	"forum-valorant/models"
 )
 
+//  gère les requêtes SQL des messages.
 type MessageRepository struct {
 	db *sql.DB
 }
 
+// initialise le dépôt.
 func InitMessageRepository(db *sql.DB) *MessageRepository {
 	return &MessageRepository{db}
 }
 
+// ajoute un message.
 func (r *MessageRepository) CreateMessage(message models.Message) error {
 	query := `
 	INSERT INTO messages
@@ -31,6 +34,7 @@ func (r *MessageRepository) CreateMessage(message models.Message) error {
 	return err
 }
 
+// trouve les messages d'un sujet (triés par score).
 func (r *MessageRepository) ReadByThreadId(threadId int) ([]models.Message, error) {
 	var messages []models.Message
 

@@ -7,16 +7,19 @@ import (
 	"forum-valorant/repositories"
 )
 
+//contient la logique des sujets.
 type ThreadService struct {
 	threadRepository *repositories.ThreadRepository
 }
 
+// initialise le service.
 func InitThreadService(threadRepository *repositories.ThreadRepository) *ThreadService {
 	return &ThreadService{
 		threadRepository: threadRepository,
 	}
 }
 
+// valide et crée un sujet.
 func (s *ThreadService) CreateThread(title string, content string, userId int) error {
 	if title == "" {
 		return errors.New("le titre est obligatoire")
@@ -38,14 +41,17 @@ func (s *ThreadService) CreateThread(title string, content string, userId int) e
 	return err
 }
 
+// liste les sujets actifs.
 func (s *ThreadService) GetVisibleThreads() ([]models.Thread, error) {
 	return s.threadRepository.ReadVisibleThreads()
 }
 
+// retourne un sujet par son ID.
 func (s *ThreadService) GetThreadById(id int) (models.Thread, error) {
 	return s.threadRepository.ReadById(id)
 }
 
+//vérifie les droits et modifie le sujet.
 func (s *ThreadService) UpdateThread(id int, title string, content string, userId int, role string) error {
 	thread, err := s.threadRepository.ReadById(id)
 
@@ -67,6 +73,7 @@ func (s *ThreadService) UpdateThread(id int, title string, content string, userI
 	return s.threadRepository.UpdateThread(thread)
 }
 
+// vérifie les droits et supprime le sujet.
 func (s *ThreadService) DeleteThread(id int, userId int, role string) error {
 	thread, err := s.threadRepository.ReadById(id)
 

@@ -9,11 +9,13 @@ import (
 	"forum-valorant/services"
 )
 
+// gère les sujets (sujets, messages, etc.).
 type ThreadController struct {
 	threadService  *services.ThreadService
 	messageService *services.MessageService
 }
 
+// InitThreadController initialise le contrôleur.
 func InitThreadController(threadService *services.ThreadService, messageService *services.MessageService) *ThreadController {
 	return &ThreadController{
 		threadService:  threadService,
@@ -21,11 +23,13 @@ func InitThreadController(threadService *services.ThreadService, messageService 
 	}
 }
 
+// ThreadDetailPage structure de données pour la page de détail.
 type ThreadDetailPage struct {
 	Thread   models.Thread
 	Messages []models.Message
 }
 
+// ShowCreateThread affiche la page pour créer un sujet.
 func (c *ThreadController) ShowCreateThread(w http.ResponseWriter, r *http.Request) {
 	_, err := services.GetUserIdFromRequest(r)
 
@@ -38,6 +42,7 @@ func (c *ThreadController) ShowCreateThread(w http.ResponseWriter, r *http.Reque
 	tmpl.Execute(w, nil)
 }
 
+// CreateThread traite le formulaire de création de sujet.
 func (c *ThreadController) CreateThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 
@@ -60,6 +65,7 @@ func (c *ThreadController) CreateThread(w http.ResponseWriter, r *http.Request) 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+// ShowThreadDetail affiche un sujet et ses messages.
 func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Query().Get("id")
 
@@ -104,6 +110,7 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 	}
 }
 
+// ShowEditThread affiche la page de modification.
 func (c *ThreadController) ShowEditThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 
@@ -144,6 +151,7 @@ func (c *ThreadController) ShowEditThread(w http.ResponseWriter, r *http.Request
 	tmpl.Execute(w, thread)
 }
 
+// EditThread traite la modification.
 func (c *ThreadController) EditThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 
@@ -181,6 +189,7 @@ func (c *ThreadController) EditThread(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/threads/view?id="+idString, http.StatusSeeOther)
 }
 
+// DeleteThread supprime un sujet.
 func (c *ThreadController) DeleteThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 

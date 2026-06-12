@@ -7,16 +7,19 @@ import (
 	"forum-valorant/services"
 )
 
+// gère l'ajout des likes/dislikes.
 type ReactionController struct {
 	reactionService *services.ReactionService
 }
 
+// InitReactionController initialise le contrôleur.
 func InitReactionController(reactionService *services.ReactionService) *ReactionController {
 	return &ReactionController{
 		reactionService: reactionService,
 	}
 }
 
+// React traite le clic sur un like/dislike.
 func (c *ReactionController) React(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 

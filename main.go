@@ -11,12 +11,15 @@ import (
 	"forum-valorant/services"
 )
 
+
 func main() {
 	config.LoadEnv()
 
+	// Initialise la base de données
 	db := config.InitDB()
 	defer db.Close()
 
+	// Connecte les couches
 	userRepository := repositories.InitUserRepository(db)
 	userService := services.InitUserService(userRepository)
 	authController := controllers.InitAuthController(userService)
@@ -34,6 +37,7 @@ func main() {
 	threadController := controllers.InitThreadController(threadService, messageService)
 	messageController := controllers.InitMessageController(messageService)
 
+	// Routes HTTP
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			authController.ShowRegister(w, r)
@@ -115,6 +119,7 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
+	// Page d'accueil
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -134,6 +139,7 @@ func main() {
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	// Lance le serveur
 	fmt.Println("Serveur lancé sur http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }

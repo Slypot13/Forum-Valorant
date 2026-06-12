@@ -5,14 +5,17 @@ import (
 	"forum-valorant/models"
 )
 
+//gère les requêtes SQL des utilisateurs.
 type UserRepository struct {
 	db *sql.DB
 }
 
+// initialise le dépôt.
 func InitUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
+// ajoute un utilisateur en base.
 func (r *UserRepository) CreateUser(user models.User) error {
 
 	query := `
@@ -33,6 +36,7 @@ func (r *UserRepository) CreateUser(user models.User) error {
 	return err
 }
 
+//cherche un utilisateur par pseudo/email.
 func (r *UserRepository) FindByIdentifier(identifier string) (models.User, error) {
 	var user models.User
 

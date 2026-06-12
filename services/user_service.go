@@ -14,16 +14,19 @@ import (
 	"forum-valorant/repositories"
 	)
 
+//contient la logique des utilisateurs (connexion/inscription).
 type UserService struct {
 	userRepository *repositories.UserRepository
 }
 
+// initialise le service.
 func InitUserService(userRepository *repositories.UserRepository) *UserService {
 	return &UserService{
 		userRepository: userRepository,
 	}
 }
 
+// valide le mot de passe, le hache et crée l'utilisateur.
 func (s *UserService) Register(user models.User) error {
 
 	if len(user.Password) < 12 {
@@ -60,6 +63,7 @@ func (s *UserService) Register(user models.User) error {
 	return s.userRepository.CreateUser(user)
 }
 
+// Login vérifie les accès et génère le jeton JWT.
 func (s *UserService) Login(identifier string, password string) (string, error) {
 	user, err := s.userRepository.FindByIdentifier(identifier)
 

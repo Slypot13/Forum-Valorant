@@ -6,14 +6,17 @@ import (
 	"forum-valorant/models"
 )
 
+// gère les requêtes SQL des sujets.
 type ThreadRepository struct {
 	db *sql.DB
 }
 
+//  initialise le dépôt.
 func InitThreadRepository(db *sql.DB) *ThreadRepository {
 	return &ThreadRepository{db}
 }
 
+// insère un sujet et retourne son ID.
 func (r *ThreadRepository) CreateThread(thread models.Thread) (int, error) {
 	query := `
 	INSERT INTO threads
@@ -42,6 +45,7 @@ func (r *ThreadRepository) CreateThread(thread models.Thread) (int, error) {
 	return int(id), nil
 }
 
+//récupère les sujets non archivés.
 func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
 	var threads []models.Thread
 
@@ -82,6 +86,7 @@ func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
 	return threads, nil
 }
 
+// trouve un sujet par son ID.
 func (r *ThreadRepository) ReadById(id int) (models.Thread, error) {
 	var thread models.Thread
 
@@ -103,6 +108,7 @@ func (r *ThreadRepository) ReadById(id int) (models.Thread, error) {
 	return thread, err
 }
 
+// modifie un sujet.
 func (r *ThreadRepository) UpdateThread(thread models.Thread) error {
 	query := `
 	UPDATE threads
@@ -120,6 +126,7 @@ func (r *ThreadRepository) UpdateThread(thread models.Thread) error {
 	return err
 }
 
+//supprime un sujet.
 func (r *ThreadRepository) DeleteThread(id int) error {
 	query := `
 	DELETE FROM threads

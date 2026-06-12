@@ -8,7 +8,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// InitDB connecte l'application à MySQL.
 func InitDB() *sql.DB {
+
 
 	user := GetRequiredEnv("DB_USER")
 	pwd := GetEnvWithDefault("DB_PWD", "")

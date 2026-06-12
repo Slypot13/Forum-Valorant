@@ -7,11 +7,13 @@ import (
 	"forum-valorant/repositories"
 )
 
+//contient la logique des messages.
 type MessageService struct {
 	messageRepository *repositories.MessageRepository
 	threadRepository  *repositories.ThreadRepository
 }
 
+// initialise le service.
 func InitMessageService(messageRepository *repositories.MessageRepository, threadRepository *repositories.ThreadRepository) *MessageService {
 	return &MessageService{
 		messageRepository: messageRepository,
@@ -19,6 +21,7 @@ func InitMessageService(messageRepository *repositories.MessageRepository, threa
 	}
 }
 
+// vérifie les règles et crée le message.
 func (s *MessageService) CreateMessage(content string, threadId int, userId int) error {
 	if content == "" {
 		return errors.New("le message ne peut pas être vide")
@@ -43,6 +46,7 @@ func (s *MessageService) CreateMessage(content string, threadId int, userId int)
 	return s.messageRepository.CreateMessage(message)
 }
 
+//liste les messages d'un sujet.
 func (s *MessageService) GetMessagesByThreadId(threadId int) ([]models.Message, error) {
 	return s.messageRepository.ReadByThreadId(threadId)
 }

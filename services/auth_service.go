@@ -9,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// lis l'ID de l'utilisateur depuis son jeton JWT (cookie).
 func GetUserIdFromRequest(r *http.Request) (int, error) {
 	cookie, err := r.Cookie("token")
 
@@ -34,6 +35,7 @@ func GetUserIdFromRequest(r *http.Request) (int, error) {
 	return userId, nil
 }
 
+// lis le rôle de l'utilisateur depuis son jeton JWT.
 func GetUserRoleFromRequest(r *http.Request) (string, error) {
 	cookie, err := r.Cookie("token")
 
