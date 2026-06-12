@@ -28,12 +28,7 @@ func GetUserIdFromRequest(r *http.Request) (int, error) {
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	userIdFloat, ok := claims["user_id"].(float64)
-
-	if !ok {
-		return 0, errors.New("id utilisateur invalide")
-	}
-
+	userIdFloat := claims["user_id"].(float64)
 	userId := int(userIdFloat)
 
 	return userId, nil
@@ -58,11 +53,7 @@ func GetUserRoleFromRequest(r *http.Request) (string, error) {
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	role, ok := claims["role"].(string)
-
-	if !ok {
-		return "", errors.New("role invalide")
-	}
+	role := claims["role"].(string)
 
 	return role, nil
 }
