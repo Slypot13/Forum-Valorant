@@ -33,3 +33,27 @@ func GetUserIdFromRequest(r *http.Request) (int, error) {
 
 	return userId, nil
 }
+
+func GetUserRoleFromRequest(r *http.Request) (string, error) {
+	cookie, err := r.Cookie("token")
+
+	if err != nil {
+		return "", errors.New("utilisateur non connecté")
+	}
+
+	secret := config.GetRequiredEnv("JWT_SECRET")
+
+	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+
+	if err != nil || token.Valid == false {
+		return "", errors.New("token invalide")
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+
+	role := claims["role"].(string)
+
+	return role, nil
+}
