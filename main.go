@@ -18,6 +18,7 @@ type HomePage struct {
 	Limit   string
 	Page    int
 	Tag     string
+	Search  string
 }
 
 func main() {
@@ -145,6 +146,16 @@ func main() {
 		limitString := r.URL.Query().Get("limit")
 		pageString := r.URL.Query().Get("page")
 		tagString := r.URL.Query().Get("tag")
+		search := r.URL.Query().Get("search")
+
+		if search != "" {
+			_, err := services.GetUserIdFromRequest(r)
+
+			if err != nil {
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				return
+			}
+		}
 
 		if pageString != "" {
 			value, err := strconv.Atoi(pageString)
@@ -169,7 +180,9 @@ func main() {
 		var threads []models.Thread
 		var err error
 
-		if tagString != "" {
+		if search != "" {
+			threads, err = threadService.SearchVisibleThreads(search, limit, offset)
+		} else if tagString != "" {
 			tagId, convertErr := strconv.Atoi(tagString)
 
 			if convertErr == nil {
@@ -191,6 +204,7 @@ func main() {
 			Limit:   limitString,
 			Page:    page,
 			Tag:     tagString,
+			Search:  search,
 		}
 
 		funcMap := template.FuncMap{

@@ -109,3 +109,12 @@ func (s *ThreadService) DeleteThread(id int, userId int, role string) error {
 
 	return s.threadRepository.DeleteThread(id)
 }
+
+// recherche des sujets par titre ou catégorie.
+func (s *ThreadService) SearchVisibleThreads(search string, limit int, offset int) ([]models.Thread, error) {
+	if search == "" {
+		return s.threadRepository.ReadVisibleThreadsPaginated(limit, offset)
+	}
+
+	return s.threadRepository.SearchVisibleThreads(search, limit, offset)
+}

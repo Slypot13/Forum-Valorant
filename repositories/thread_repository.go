@@ -191,6 +191,58 @@ func (r *ThreadRepository) ReadVisibleThreadsByTagPaginated(tagId int, limit int
 	return threads, nil
 }
 
+// recherche dans les titres et les catégories.
+func (r *ThreadRepository) SearchVisibleThreads(search string, limit int, offset int) ([]models.Thread, error) {
+	var threads []models.Thread
+
+	searchValue := "%" + search + "%"
+
+	query := `
+	SELECT DISTINCT t.id, t.title, t.content, t.status, t.user_id, u.username, t.created_at
+	FROM threads t
+	INNER JOIN users u ON t.user_id = u.id
+	LEFT JOIN thread_tags tt ON t.id = tt.thread_id
+	LEFT JOIN tags tag ON tt.tag_id = tag.id
+	WHERE t.status != 'archivé'
+	AND (
+		t.title LIKE ?
+		OR tag.name LIKE ?
+	)
+	ORDER BY t.created_at DESC
+	LIMIT ? OFFSET ?
+	`
+
+	rows, err := r.db.Query(query, searchValue, searchValue, limit, offset)
+
+	if err != nil {
+		return threads, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var thread models.Thread
+
+		err := rows.Scan(
+			&thread.Id,
+			&thread.Title,
+			&thread.Content,
+			&thread.Status,
+			&thread.UserId,
+			&thread.Username,
+			&thread.CreatedAt,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		threads = append(threads, thread)
+	}
+
+	return threads, nil
+}
+
 // trouve un sujet par son ID.
 func (r *ThreadRepository) ReadById(id int) (models.Thread, error) {
 	var thread models.Thread

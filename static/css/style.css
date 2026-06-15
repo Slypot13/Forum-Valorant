@@ -358,3 +358,37 @@ body::before {
 .pagination-bar a:hover {
     background-color: #374151;
 }
+
+.search-box {
+    background-color: rgba(17, 24, 39, 0.92);
+    border: 1px solid #263241;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.search-box form {
+    display: flex;
+    gap: 10px;
+}
+
+.search-box input {
+    flex: 1;
+    background-color: #0f1923;
+    color: white;
+    border: 1px solid #263241;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.search-box button {
+    background-color: #ff4655;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background-color: #d93645;
+}
