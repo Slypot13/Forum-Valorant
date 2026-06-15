@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Administration - Valoroom</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo">Valoroom Admin</div>
+    <nav>
+        <a href="/">Accueil</a>
+        <a href="/admin">Admin</a>
+    </nav>
+</header>
+
+<div class="thread-detail-container">
+
+    <section class="messages-section">
+        <h1>Tableau de bord administrateur</h1>
+    </section>
+
+    <section class="messages-section">
+        <h2>Fils de discussion</h2>
+
+        {{range .Threads}}
+        <div class="message-card">
+            <p><strong>{{.Title}}</strong></p>
+            <p class="meta">Créé par {{.Username}} · état : {{.Status}}</p>
+
+            <form method="POST" action="/admin/thread/status">
+                <input type="hidden" name="thread_id" value="{{.Id}}">
+
+                <select name="status">
+                    <option value="ouvert">ouvert</option>
+                    <option value="fermé">fermé</option>
+                    <option value="archivé">archivé</option>
+                </select>
+
+                <button type="submit">Modifier état</button>
+            </form>
+
+            <form method="POST" action="/admin/thread/delete" style="margin-top:10px;">
+                <input type="hidden" name="thread_id" value="{{.Id}}">
+                <button class="delete-button" type="submit">Supprimer le fil</button>
+            </form>
+        </div>
+        {{end}}
+    </section>
+
+    <section class="messages-section">
+        <h2>Messages</h2>
+
+        {{range .Messages}}
+        <div class="message-card">
+            <p>{{.Content}}</p>
+            <p class="meta">Message de {{.Username}} · fil #{{.ThreadId}}</p>
+
+            <form method="POST" action="/admin/message/delete">
+                <input type="hidden" name="message_id" value="{{.Id}}">
+                <button class="delete-button" type="submit">Supprimer le message</button>
+            </form>
+        </div>
+        {{end}}
+    </section>
+
+    <section class="messages-section">
+        <h2>Utilisateurs</h2>
+
+        {{range .Users}}
+        <div class="message-card">
+            <p><strong>{{.Username}}</strong> — {{.Email}}</p>
+            <p class="meta">Rôle : {{.Role}} · Banni : {{.IsBanned}}</p>
+
+            <form method="POST" action="/admin/user/ban">
+                <input type="hidden" name="user_id" value="{{.Id}}">
+                <button class="delete-button" type="submit">Bannir</button>
+            </form>
+        </div>
+        {{end}}
+    </section>
+
+</div>
+
+</body>
+</html>

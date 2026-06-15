@@ -41,6 +41,10 @@ func main() {
 	reactionService := services.InitReactionService(reactionRepository)
 	reactionController := controllers.InitReactionController(reactionService)
 
+	adminRepository := repositories.InitAdminRepository(db)
+	adminService := services.InitAdminService(adminRepository)
+	adminController := controllers.InitAdminController(adminService)
+
 	threadController := controllers.InitThreadController(threadService, messageService)
 	messageController := controllers.InitMessageController(messageService)
 
@@ -66,6 +70,46 @@ func main() {
 			authController.Login(w, r)
 			return
 		}
+	})
+
+	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) {
+		adminController.ShowDashboard(w, r)
+	})
+
+	http.HandleFunc("/admin/thread/status", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			adminController.UpdateThreadStatus(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	})
+
+	http.HandleFunc("/admin/thread/delete", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			adminController.DeleteThread(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	})
+
+	http.HandleFunc("/admin/message/delete", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			adminController.DeleteMessage(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	})
+
+	http.HandleFunc("/admin/user/ban", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			adminController.BanUser(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 	})
 
 	http.HandleFunc("/threads/create", func(w http.ResponseWriter, r *http.Request) {
