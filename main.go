@@ -115,6 +115,15 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
+	http.HandleFunc("/messages/delete", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			messageController.DeleteMessage(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})
+
 	http.HandleFunc("/reactions/create", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			reactionController.React(w, r)

@@ -98,6 +98,14 @@
                         <button type="submit">👎</button>
                     </form>
                 </div>
+
+                <form method="POST" action="/messages/delete" style="margin-top:10px;">
+                    <input type="hidden" name="message_id" value="{{.Id}}">
+                    <input type="hidden" name="thread_id" value="{{$.Thread.Id}}">
+                    <button class="delete-button" type="submit">
+                        Supprimer mon message
+                    </button>
+                </form>
             </div>
             {{end}}
 
