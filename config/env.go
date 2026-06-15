@@ -6,7 +6,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// LoadEnv charge le fichier .env.
+// charge le fichier .env.
 func LoadEnv() {
 	err := godotenv.Load(".env")
 
@@ -15,7 +15,7 @@ func LoadEnv() {
 	}
 }
 
-// GetEnvWithDefault récupère une variable ou sa valeur par défaut.
+//  récupère une variable ou sa valeur par défaut.
 func GetEnvWithDefault(key, defaultValue string) string {
 	value, exists := os.LookupEnv(key)
 
@@ -26,7 +26,7 @@ func GetEnvWithDefault(key, defaultValue string) string {
 	return value
 }
 
-// GetRequiredEnv récupère une variable obligatoire.
+// récupère une variable obligatoire.
 func GetRequiredEnv(key string) string {
 	value, exists := os.LookupEnv(key)
 
