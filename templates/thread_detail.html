@@ -22,7 +22,7 @@
 
     <article class="thread-detail">
         <p class="meta">
-            Créé par utilisateur #{{.Thread.UserId}} · {{.Thread.CreatedAt}} · état : {{.Thread.Status}}
+            Créé par {{.Thread.Username}} · {{.Thread.CreatedAt}} · état : {{.Thread.Status}}
         </p>
 
         <h1>{{.Thread.Title}}</h1>
@@ -76,7 +76,7 @@
             {{range .Messages}}
             <div class="message-card">
                 <p class="meta">
-                    Message de l'utilisateur #{{.UserId}} · {{.CreatedAt}}
+                    Message de {{.Username}} · {{.CreatedAt}}
                 </p>
 
                 <p>{{.Content}}</p>

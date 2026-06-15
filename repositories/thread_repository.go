@@ -63,10 +63,11 @@ func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
 	var threads []models.Thread
 
 	query := `
-	SELECT id, title, content, status, user_id, created_at
-	FROM threads
-	WHERE status != 'archivé'
-	ORDER BY created_at DESC
+	SELECT t.id, t.title, t.content, t.status, t.user_id, u.username, t.created_at
+	FROM threads t
+	INNER JOIN users u ON t.user_id = u.id
+	WHERE t.status != 'archivé'
+	ORDER BY t.created_at DESC
 	`
 
 	rows, err := r.db.Query(query)
@@ -86,6 +87,7 @@ func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
 			&thread.Content,
 			&thread.Status,
 			&thread.UserId,
+			&thread.Username,
 			&thread.CreatedAt,
 		)
 
@@ -104,10 +106,11 @@ func (r *ThreadRepository) ReadVisibleThreadsPaginated(limit int, offset int) ([
 	var threads []models.Thread
 
 	query := `
-	SELECT id, title, content, status, user_id, created_at
-	FROM threads
-	WHERE status != 'archivé'
-	ORDER BY created_at DESC
+	SELECT t.id, t.title, t.content, t.status, t.user_id, u.username, t.created_at
+	FROM threads t
+	INNER JOIN users u ON t.user_id = u.id
+	WHERE t.status != 'archivé'
+	ORDER BY t.created_at DESC
 	LIMIT ? OFFSET ?
 	`
 
@@ -128,6 +131,7 @@ func (r *ThreadRepository) ReadVisibleThreadsPaginated(limit int, offset int) ([
 			&thread.Content,
 			&thread.Status,
 			&thread.UserId,
+			&thread.Username,
 			&thread.CreatedAt,
 		)
 
@@ -146,8 +150,9 @@ func (r *ThreadRepository) ReadVisibleThreadsByTagPaginated(tagId int, limit int
 	var threads []models.Thread
 
 	query := `
-	SELECT t.id, t.title, t.content, t.status, t.user_id, t.created_at
+	SELECT t.id, t.title, t.content, t.status, t.user_id, u.username, t.created_at
 	FROM threads t
+	INNER JOIN users u ON t.user_id = u.id
 	INNER JOIN thread_tags tt ON t.id = tt.thread_id
 	WHERE t.status != 'archivé'
 	AND tt.tag_id = ?
@@ -172,6 +177,7 @@ func (r *ThreadRepository) ReadVisibleThreadsByTagPaginated(tagId int, limit int
 			&thread.Content,
 			&thread.Status,
 			&thread.UserId,
+			&thread.Username,
 			&thread.CreatedAt,
 		)
 
@@ -190,9 +196,10 @@ func (r *ThreadRepository) ReadById(id int) (models.Thread, error) {
 	var thread models.Thread
 
 	query := `
-	SELECT id, title, content, status, user_id, created_at
-	FROM threads
-	WHERE id = ? AND status != 'archivé'
+	SELECT t.id, t.title, t.content, t.status, t.user_id, u.username, t.created_at
+	FROM threads t
+	INNER JOIN users u ON t.user_id = u.id
+	WHERE t.id = ? AND t.status != 'archivé'
 	`
 
 	err := r.db.QueryRow(query, id).Scan(
@@ -201,6 +208,7 @@ func (r *ThreadRepository) ReadById(id int) (models.Thread, error) {
 		&thread.Content,
 		&thread.Status,
 		&thread.UserId,
+		&thread.Username,
 		&thread.CreatedAt,
 	)
 

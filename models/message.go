@@ -5,6 +5,7 @@ type Message struct {
 	Content   string
 	ThreadId  int
 	UserId    int
+	Username  string
 	CreatedAt string
 	Score     int
 }

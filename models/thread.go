@@ -6,5 +6,6 @@ type Thread struct {
 	Content   string
 	Status    string
 	UserId    int
+	Username  string
 	CreatedAt string
 }
