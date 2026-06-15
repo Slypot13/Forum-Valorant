@@ -6,14 +6,17 @@ import (
 	"forum-valorant/models"
 )
 
+// gère les requêtes SQL pour l'administration.
 type AdminRepository struct {
 	db *sql.DB
 }
 
+// initialise le dépôt d'administration.
 func InitAdminRepository(db *sql.DB) *AdminRepository {
 	return &AdminRepository{db}
 }
 
+// récupère tous les sujets de la base de données.
 func (r *AdminRepository) ReadAllThreads() ([]models.Thread, error) {
 	var threads []models.Thread
 
@@ -55,6 +58,7 @@ func (r *AdminRepository) ReadAllThreads() ([]models.Thread, error) {
 	return threads, nil
 }
 
+// modifie le statut d'un sujet.
 func (r *AdminRepository) UpdateThreadStatus(threadId int, status string) error {
 	query := `
 	UPDATE threads
@@ -67,6 +71,7 @@ func (r *AdminRepository) UpdateThreadStatus(threadId int, status string) error 
 	return err
 }
 
+// supprime un sujet.
 func (r *AdminRepository) DeleteThread(threadId int) error {
 	query := `
 	DELETE FROM threads
@@ -78,6 +83,7 @@ func (r *AdminRepository) DeleteThread(threadId int) error {
 	return err
 }
 
+// supprime un message.
 func (r *AdminRepository) DeleteMessage(messageId int) error {
 	query := `
 	DELETE FROM messages
@@ -89,6 +95,7 @@ func (r *AdminRepository) DeleteMessage(messageId int) error {
 	return err
 }
 
+// récupère tous les messages de la base de données.
 func (r *AdminRepository) ReadAllMessages() ([]models.Message, error) {
 	var messages []models.Message
 
@@ -129,6 +136,7 @@ func (r *AdminRepository) ReadAllMessages() ([]models.Message, error) {
 	return messages, nil
 }
 
+// récupère tous les utilisateurs.
 func (r *AdminRepository) ReadAllUsers() ([]models.User, error) {
 	var users []models.User
 
@@ -168,6 +176,7 @@ func (r *AdminRepository) ReadAllUsers() ([]models.User, error) {
 	return users, nil
 }
 
+// bannit un utilisateur.
 func (r *AdminRepository) BanUser(userId int) error {
 	query := `
 	UPDATE users
