@@ -7,7 +7,7 @@ import (
 	"forum-valorant/repositories"
 )
 
-//contient la logique des messages.
+// contient la logique des messages.
 type MessageService struct {
 	messageRepository *repositories.MessageRepository
 	threadRepository  *repositories.ThreadRepository
@@ -46,7 +46,7 @@ func (s *MessageService) CreateMessage(content string, threadId int, userId int)
 	return s.messageRepository.CreateMessage(message)
 }
 
-//liste les messages d'un sujet.
-func (s *MessageService) GetMessagesByThreadId(threadId int) ([]models.Message, error) {
-	return s.messageRepository.ReadByThreadId(threadId)
+// liste les messages d'un sujet avec un tri.
+func (s *MessageService) GetMessagesByThreadId(threadId int, sort string) ([]models.Message, error) {
+	return s.messageRepository.ReadByThreadId(threadId, sort)
 }

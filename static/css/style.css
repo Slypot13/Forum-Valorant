@@ -315,3 +315,24 @@ body::before {
 .delete-button:hover {
     background-color: #b91c1c;
 }
+
+.sort-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: #d1d5db;
+    font-size: 14px;
+}
+
+.sort-bar a {
+    color: #ff4655;
+    text-decoration: none;
+    background-color: #263241;
+    padding: 6px 10px;
+    border-radius: 5px;
+}
+
+.sort-bar a:hover {
+    background-color: #374151;
+}

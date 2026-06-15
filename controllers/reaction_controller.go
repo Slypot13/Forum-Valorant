@@ -12,7 +12,7 @@ type ReactionController struct {
 	reactionService *services.ReactionService
 }
 
-// InitReactionController initialise le contrôleur.
+//  initialise le contrôleur.
 func InitReactionController(reactionService *services.ReactionService) *ReactionController {
 	return &ReactionController{
 		reactionService: reactionService,

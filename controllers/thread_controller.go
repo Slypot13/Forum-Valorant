@@ -9,13 +9,13 @@ import (
 	"forum-valorant/services"
 )
 
-// gère les sujets (sujets, messages, etc.).
+// gère les sujets.
 type ThreadController struct {
 	threadService  *services.ThreadService
 	messageService *services.MessageService
 }
 
-// InitThreadController initialise le contrôleur.
+// initialise le contrôleur.
 func InitThreadController(threadService *services.ThreadService, messageService *services.MessageService) *ThreadController {
 	return &ThreadController{
 		threadService:  threadService,
@@ -23,13 +23,14 @@ func InitThreadController(threadService *services.ThreadService, messageService 
 	}
 }
 
-// ThreadDetailPage structure de données pour la page de détail.
+// données envoyées à la page détail.
 type ThreadDetailPage struct {
 	Thread   models.Thread
 	Messages []models.Message
+	Sort     string
 }
 
-// ShowCreateThread affiche la page pour créer un sujet.
+// affiche la page de création.
 func (c *ThreadController) ShowCreateThread(w http.ResponseWriter, r *http.Request) {
 	_, err := services.GetUserIdFromRequest(r)
 
@@ -42,7 +43,7 @@ func (c *ThreadController) ShowCreateThread(w http.ResponseWriter, r *http.Reque
 	tmpl.Execute(w, nil)
 }
 
-// CreateThread traite le formulaire de création de sujet.
+// traite la création.
 func (c *ThreadController) CreateThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 
@@ -65,7 +66,7 @@ func (c *ThreadController) CreateThread(w http.ResponseWriter, r *http.Request) 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-// ShowThreadDetail affiche un sujet et ses messages.
+// affiche un sujet et ses messages.
 func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Query().Get("id")
 
@@ -83,7 +84,9 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	messages, err := c.messageService.GetMessagesByThreadId(id)
+	sort := r.URL.Query().Get("sort")
+
+	messages, err := c.messageService.GetMessagesByThreadId(id, sort)
 
 	if err != nil {
 		http.Error(w, "Erreur lors du chargement des messages", http.StatusInternalServerError)
@@ -93,6 +96,7 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 	page := ThreadDetailPage{
 		Thread:   thread,
 		Messages: messages,
+		Sort:     sort,
 	}
 
 	tmpl, err := template.ParseFiles("templates/thread_detail.html")
@@ -110,7 +114,7 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// ShowEditThread affiche la page de modification.
+// affiche la page de modification.
 func (c *ThreadController) ShowEditThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 
@@ -151,7 +155,7 @@ func (c *ThreadController) ShowEditThread(w http.ResponseWriter, r *http.Request
 	tmpl.Execute(w, thread)
 }
 
-// EditThread traite la modification.
+// traite la modification.
 func (c *ThreadController) EditThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 
@@ -189,7 +193,7 @@ func (c *ThreadController) EditThread(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/threads/view?id="+idString, http.StatusSeeOther)
 }
 
-// DeleteThread supprime un sujet.
+// supprime un sujet.
 func (c *ThreadController) DeleteThread(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 

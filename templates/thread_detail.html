@@ -46,6 +46,22 @@
     <section class="messages-section">
         <h2>Messages</h2>
 
+        <div class="sort-bar">
+            <span>Trier par :</span>
+
+            <a href="/threads/view?id={{.Thread.Id}}">
+                Plus récent
+            </a>
+
+            <a href="/threads/view?id={{.Thread.Id}}&sort=oldest">
+                Plus ancien
+            </a>
+
+            <a href="/threads/view?id={{.Thread.Id}}&sort=popular">
+                Popularité
+            </a>
+        </div>
+
         {{if .Messages}}
 
             {{range .Messages}}

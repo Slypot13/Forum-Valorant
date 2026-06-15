@@ -6,17 +6,14 @@ import (
 	"forum-valorant/models"
 )
 
-//  gère les requêtes SQL des messages.
 type MessageRepository struct {
 	db *sql.DB
 }
 
-// initialise le dépôt.
 func InitMessageRepository(db *sql.DB) *MessageRepository {
 	return &MessageRepository{db}
 }
 
-// ajoute un message.
 func (r *MessageRepository) CreateMessage(message models.Message) error {
 	query := `
 	INSERT INTO messages
@@ -34,9 +31,18 @@ func (r *MessageRepository) CreateMessage(message models.Message) error {
 	return err
 }
 
-// trouve les messages d'un sujet (triés par score).
-func (r *MessageRepository) ReadByThreadId(threadId int) ([]models.Message, error) {
+func (r *MessageRepository) ReadByThreadId(threadId int, sort string) ([]models.Message, error) {
 	var messages []models.Message
+
+	orderBy := "m.created_at DESC"
+
+	if sort == "oldest" {
+		orderBy = "m.created_at ASC"
+	}
+
+	if sort == "popular" {
+		orderBy = "score DESC"
+	}
 
 	query := `
 	SELECT
@@ -58,8 +64,7 @@ func (r *MessageRepository) ReadByThreadId(threadId int) ([]models.Message, erro
 	LEFT JOIN reactions r ON m.id = r.message_id
 	WHERE m.thread_id = ?
 	GROUP BY m.id, m.content, m.thread_id, m.user_id, m.created_at
-	ORDER BY score DESC
-	`
+	ORDER BY ` + orderBy
 
 	rows, err := r.db.Query(query, threadId)
 
