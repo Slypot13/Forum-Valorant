@@ -7,16 +7,19 @@ import (
 	"forum-valorant/services"
 )
 
+// gère les actions liées aux messages du forum.
 type MessageController struct {
 	messageService *services.MessageService
 }
 
+// initialise le contrôleur de messages.
 func InitMessageController(messageService *services.MessageService) *MessageController {
 	return &MessageController{
 		messageService: messageService,
 	}
 }
 
+// traite la création d'un nouveau message.
 func (c *MessageController) CreateMessage(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 
@@ -46,6 +49,7 @@ func (c *MessageController) CreateMessage(w http.ResponseWriter, r *http.Request
 	http.Redirect(w, r, "/threads/view?id="+threadIdString, http.StatusSeeOther)
 }
 
+// supprime un message.
 func (c *MessageController) DeleteMessage(w http.ResponseWriter, r *http.Request) {
 	userId, err := services.GetUserIdFromRequest(r)
 

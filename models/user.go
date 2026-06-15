@@ -1,5 +1,6 @@
 package models
 
+// représente un utilisateur du forum.
 type User struct {
 	Id        int
 	Username  string

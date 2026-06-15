@@ -1,5 +1,6 @@
 package models
 
+// représente un fil de discussion (sujet).
 type Thread struct {
 	Id        int
 	Title     string

@@ -13,6 +13,7 @@ import (
 	"forum-valorant/services"
 )
 
+// représente les données de la page d'accueil.
 type HomePage struct {
 	Threads []models.Thread
 	Limit   string
@@ -21,12 +22,16 @@ type HomePage struct {
 	Search  string
 }
 
+// configure et lance le serveur web.
 func main() {
+	// charge les variables d'environnement.
 	config.LoadEnv()
 
+	// initialise la connexion à la base de données.
 	db := config.InitDB()
 	defer db.Close()
 
+	// initialisation des dépôts, services et contrôleurs.
 	userRepository := repositories.InitUserRepository(db)
 	userService := services.InitUserService(userRepository)
 	authController := controllers.InitAuthController(userService)
@@ -48,6 +53,7 @@ func main() {
 	threadController := controllers.InitThreadController(threadService, messageService)
 	messageController := controllers.InitMessageController(messageService)
 
+	// définition des routes HTTP de l'application.
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			authController.ShowRegister(w, r)
@@ -178,6 +184,7 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
+	// route principale (page d'accueil) avec recherche et pagination.
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -269,8 +276,10 @@ func main() {
 		tmpl.Execute(w, data)
 	})
 
+	// gestion des fichiers statiques (css, js, images).
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	// démarrage du serveur sur le port 8080.
 	fmt.Println("Serveur lancé sur http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }

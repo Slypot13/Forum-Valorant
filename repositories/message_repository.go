@@ -6,14 +6,17 @@ import (
 	"forum-valorant/models"
 )
 
+// gère les requêtes SQL pour les messages.
 type MessageRepository struct {
 	db *sql.DB
 }
 
+// initialise le dépôt de messages.
 func InitMessageRepository(db *sql.DB) *MessageRepository {
 	return &MessageRepository{db}
 }
 
+// insère un message en base de données.
 func (r *MessageRepository) CreateMessage(message models.Message) error {
 	query := `
 	INSERT INTO messages
@@ -26,6 +29,7 @@ func (r *MessageRepository) CreateMessage(message models.Message) error {
 	return err
 }
 
+// récupère les messages d'un fil avec tri et pagination.
 func (r *MessageRepository) ReadByThreadId(threadId int, sort string, limit int, offset int) ([]models.Message, error) {
 	var messages []models.Message
 
@@ -93,6 +97,7 @@ func (r *MessageRepository) ReadByThreadId(threadId int, sort string, limit int,
 	return messages, nil
 }
 
+// récupère un message par son ID.
 func (r *MessageRepository) ReadById(id int) (models.Message, error) {
 	var message models.Message
 
@@ -113,6 +118,7 @@ func (r *MessageRepository) ReadById(id int) (models.Message, error) {
 	return message, err
 }
 
+// supprime un message.
 func (r *MessageRepository) DeleteMessage(id int) error {
 	query := `
 	DELETE FROM messages
