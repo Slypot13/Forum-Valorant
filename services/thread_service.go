@@ -20,13 +20,17 @@ func InitThreadService(threadRepository *repositories.ThreadRepository) *ThreadS
 }
 
 // valide et crée un sujet.
-func (s *ThreadService) CreateThread(title string, content string, userId int) error {
+func (s *ThreadService) CreateThread(title string, content string, userId int, tagId int) error {
 	if title == "" {
 		return errors.New("le titre est obligatoire")
 	}
 
 	if content == "" {
 		return errors.New("le contenu est obligatoire")
+	}
+
+	if tagId <= 0 {
+		return errors.New("la catégorie est obligatoire")
 	}
 
 	thread := models.Thread{
@@ -36,9 +40,13 @@ func (s *ThreadService) CreateThread(title string, content string, userId int) e
 		UserId:  userId,
 	}
 
-	_, err := s.threadRepository.CreateThread(thread)
+	threadId, err := s.threadRepository.CreateThread(thread)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	return s.threadRepository.AddTagToThread(threadId, tagId)
 }
 
 // liste les sujets actifs.
@@ -51,12 +59,19 @@ func (s *ThreadService) GetVisibleThreadsPaginated(limit int, offset int) ([]mod
 	return s.threadRepository.ReadVisibleThreadsPaginated(limit, offset)
 }
 
+// liste les sujets d'une catégorie avec pagination.
+func (s *ThreadService) GetVisibleThreadsByTagPaginated(tagId int, limit int, offset int) ([]models.Thread, error) {
+	return s.threadRepository.ReadVisibleThreadsByTagPaginated(tagId, limit, offset)
+}
+
 // retourne un sujet par son ID.
 func (s *ThreadService) GetThreadById(id int) (models.Thread, error) {
 	return s.threadRepository.ReadById(id)
 }
 
 // vérifie les droits et modifie le sujet.
+// Pour l'instant, seul le propriétaire peut modifier son sujet.
+// La logique admin sera ajoutée plus tard dans la partie administration.
 func (s *ThreadService) UpdateThread(id int, title string, content string, userId int, role string) error {
 	thread, err := s.threadRepository.ReadById(id)
 
@@ -64,7 +79,7 @@ func (s *ThreadService) UpdateThread(id int, title string, content string, userI
 		return errors.New("fil introuvable")
 	}
 
-	if thread.UserId != userId && role != "admin" {
+	if thread.UserId != userId {
 		return errors.New("vous n'avez pas le droit de modifier ce fil")
 	}
 
@@ -79,6 +94,8 @@ func (s *ThreadService) UpdateThread(id int, title string, content string, userI
 }
 
 // vérifie les droits et supprime le sujet.
+// Pour l'instant, seul le propriétaire peut supprimer son sujet.
+// La logique admin sera ajoutée plus tard dans la partie administration.
 func (s *ThreadService) DeleteThread(id int, userId int, role string) error {
 	thread, err := s.threadRepository.ReadById(id)
 
@@ -86,7 +103,7 @@ func (s *ThreadService) DeleteThread(id int, userId int, role string) error {
 		return errors.New("fil introuvable")
 	}
 
-	if thread.UserId != userId && role != "admin" {
+	if thread.UserId != userId {
 		return errors.New("vous n'avez pas le droit de supprimer ce fil")
 	}
 

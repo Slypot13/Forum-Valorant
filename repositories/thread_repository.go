@@ -45,6 +45,19 @@ func (r *ThreadRepository) CreateThread(thread models.Thread) (int, error) {
 	return int(id), nil
 }
 
+// ajoute une catégorie à un sujet.
+func (r *ThreadRepository) AddTagToThread(threadId int, tagId int) error {
+	query := `
+	INSERT INTO thread_tags
+	(thread_id, tag_id)
+	VALUES (?, ?)
+	`
+
+	_, err := r.db.Exec(query, threadId, tagId)
+
+	return err
+}
+
 // récupère les sujets non archivés.
 func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
 	var threads []models.Thread
@@ -99,6 +112,50 @@ func (r *ThreadRepository) ReadVisibleThreadsPaginated(limit int, offset int) ([
 	`
 
 	rows, err := r.db.Query(query, limit, offset)
+
+	if err != nil {
+		return threads, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var thread models.Thread
+
+		err := rows.Scan(
+			&thread.Id,
+			&thread.Title,
+			&thread.Content,
+			&thread.Status,
+			&thread.UserId,
+			&thread.CreatedAt,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		threads = append(threads, thread)
+	}
+
+	return threads, nil
+}
+
+// récupère les sujets d'une catégorie avec pagination.
+func (r *ThreadRepository) ReadVisibleThreadsByTagPaginated(tagId int, limit int, offset int) ([]models.Thread, error) {
+	var threads []models.Thread
+
+	query := `
+	SELECT t.id, t.title, t.content, t.status, t.user_id, t.created_at
+	FROM threads t
+	INNER JOIN thread_tags tt ON t.id = tt.thread_id
+	WHERE t.status != 'archivé'
+	AND tt.tag_id = ?
+	ORDER BY t.created_at DESC
+	LIMIT ? OFFSET ?
+	`
+
+	rows, err := r.db.Query(query, tagId, limit, offset)
 
 	if err != nil {
 		return threads, err

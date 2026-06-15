@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
-
+	
 	"forum-valorant/models"
 	"forum-valorant/services"
 )
@@ -56,8 +56,16 @@ func (c *ThreadController) CreateThread(w http.ResponseWriter, r *http.Request) 
 
 	title := r.FormValue("title")
 	content := r.FormValue("content")
+	tagIdString := r.FormValue("tag_id")
 
-	err = c.threadService.CreateThread(title, content, userId)
+	tagId, err := strconv.Atoi(tagIdString)
+
+	if err != nil {
+		http.Error(w, "Catégorie invalide", http.StatusBadRequest)
+		return
+	}
+
+	err = c.threadService.CreateThread(title, content, userId, tagId)
 
 	if err != nil {
 		tmpl := template.Must(template.ParseFiles("templates/create_thread.html"))

@@ -5,10 +5,10 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
-	"forum-valorant/models"
 
 	"forum-valorant/config"
 	"forum-valorant/controllers"
+	"forum-valorant/models"
 	"forum-valorant/repositories"
 	"forum-valorant/services"
 )
@@ -17,6 +17,7 @@ type HomePage struct {
 	Threads []models.Thread
 	Limit   string
 	Page    int
+	Tag     string
 }
 
 func main() {
@@ -42,7 +43,6 @@ func main() {
 	threadController := controllers.InitThreadController(threadService, messageService)
 	messageController := controllers.InitMessageController(messageService)
 
-	// Routes HTTP
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			authController.ShowRegister(w, r)
@@ -124,7 +124,6 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
-	// Page d'accueil avec pagination
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -133,8 +132,10 @@ func main() {
 
 		page := 1
 		limit := 10
+
 		limitString := r.URL.Query().Get("limit")
 		pageString := r.URL.Query().Get("page")
+		tagString := r.URL.Query().Get("tag")
 
 		if pageString != "" {
 			value, err := strconv.Atoi(pageString)
@@ -156,7 +157,20 @@ func main() {
 
 		offset := (page - 1) * limit
 
-		threads, err := threadService.GetVisibleThreadsPaginated(limit, offset)
+		var threads []models.Thread
+		var err error
+
+		if tagString != "" {
+			tagId, convertErr := strconv.Atoi(tagString)
+
+			if convertErr == nil {
+				threads, err = threadService.GetVisibleThreadsByTagPaginated(tagId, limit, offset)
+			} else {
+				threads, err = threadService.GetVisibleThreadsPaginated(limit, offset)
+			}
+		} else {
+			threads, err = threadService.GetVisibleThreadsPaginated(limit, offset)
+		}
 
 		if err != nil {
 			http.Error(w, "Erreur lors du chargement des sujets", http.StatusInternalServerError)
@@ -167,18 +181,24 @@ func main() {
 			Threads: threads,
 			Limit:   limitString,
 			Page:    page,
+			Tag:     tagString,
 		}
 
 		funcMap := template.FuncMap{
-	"plus": func(a int, b int) int {
-		return a + b
-	},
-	"minus": func(a int, b int) int {
-		return a - b
-	},
-}
+			"plus": func(a int, b int) int {
+				return a + b
+			},
+			"minus": func(a int, b int) int {
+				return a - b
+			},
+		}
 
-tmpl := template.Must(template.New("index.html").Funcs(funcMap).ParseFiles("templates/index.html"))
+		tmpl := template.Must(
+			template.New("index.html").
+				Funcs(funcMap).
+				ParseFiles("templates/index.html"),
+		)
+
 		tmpl.Execute(w, data)
 	})
 

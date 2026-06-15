@@ -2,42 +2,72 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nouveau sujet</title>
+    <title>Nouveau sujet - Valoroom</title>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-<h1>Créer un fil de discussion</h1>
+<header class="topbar">
+    <div class="logo">Valoroom</div>
 
-{{if .}}
-<p style="color:red;">{{.}}</p>
-{{end}}
+    <nav>
+        <a href="/">Accueil</a>
+        <a href="/threads/create">Créer</a>
+        <a href="/login">Connexion</a>
+        <a href="/register">Inscription</a>
+    </nav>
+</header>
 
-<form method="POST" action="/threads/create">
+<div class="thread-detail-container">
 
-    <input
-        type="text"
-        name="title"
-        placeholder="Titre du sujet"
-        required
-    >
+    <section class="reply-section">
+        <h1>Créer un fil de discussion</h1>
 
-    <br><br>
+        {{if .}}
+            <p style="color:red;">{{.}}</p>
+        {{end}}
 
-    <textarea
-        name="content"
-        rows="8"
-        cols="50"
-        placeholder="Contenu du sujet"
-        required
-    ></textarea>
+        <form method="POST" action="/threads/create">
 
-    <br><br>
+            <input
+                type="text"
+                name="title"
+                placeholder="Titre du sujet"
+                required
+            >
 
-    <button type="submit">
-        Créer le sujet
-    </button>
+            <br><br>
 
-</form>
+            <textarea
+                name="content"
+                rows="8"
+                placeholder="Contenu du sujet"
+                required
+            ></textarea>
+
+            <br><br>
+
+            <label for="tag_id">Catégorie</label>
+            <br><br>
+
+            <select name="tag_id" id="tag_id" required>
+                <option value="1">Agents</option>
+                <option value="2">Maps</option>
+                <option value="3">Gameplay</option>
+                <option value="4">Esport</option>
+                <option value="5">Débutants</option>
+            </select>
+
+            <br><br>
+
+            <button type="submit">
+                Créer le sujet
+            </button>
+
+        </form>
+    </section>
+
+</div>
 
 </body>
 </html>

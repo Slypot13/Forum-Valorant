@@ -22,11 +22,12 @@
 
     <aside class="left-sidebar">
         <h3>Catégories</h3>
-        <a href="#">Agents</a>
-        <a href="#">Maps</a>
-        <a href="#">Gameplay</a>
-        <a href="#">Esport</a>
-        <a href="#">Débutants</a>
+        <a href="/">Toutes</a>
+        <a href="/?tag=1&limit={{.Limit}}">Agents</a>
+        <a href="/?tag=2&limit={{.Limit}}">Maps</a>
+        <a href="/?tag=3&limit={{.Limit}}">Gameplay</a>
+        <a href="/?tag=4&limit={{.Limit}}">Esport</a>
+        <a href="/?tag=5&limit={{.Limit}}">Débutants</a>
     </aside>
 
     <main class="feed">
@@ -37,10 +38,10 @@
 
         <div class="pagination-bar">
             <span>Afficher :</span>
-            <a href="/?limit=10">10</a>
-            <a href="/?limit=20">20</a>
-            <a href="/?limit=30">30</a>
-            <a href="/?limit=all">Tous</a>
+            <a href="/?tag={{.Tag}}&limit=10">10</a>
+            <a href="/?tag={{.Tag}}&limit=20">20</a>
+            <a href="/?tag={{.Tag}}&limit=30">30</a>
+            <a href="/?tag={{.Tag}}&limit=all">Tous</a>
         </div>
 
         {{if .Threads}}
@@ -73,8 +74,8 @@
         {{else}}
 
             <div class="empty-message">
-                <p>Aucun sujet pour le moment.</p>
-                <a href="/threads/create">Créer le premier sujet</a>
+                <p>Aucun sujet pour cette catégorie.</p>
+                <a href="/threads/create">Créer un sujet</a>
             </div>
 
         {{end}}
@@ -82,12 +83,16 @@
         {{if ne .Limit "all"}}
         <div class="pagination-bar">
             {{if gt .Page 1}}
-                <a href="/?page={{minus .Page 1}}&limit={{.Limit}}">Page précédente</a>
+                <a href="/?tag={{.Tag}}&page={{minus .Page 1}}&limit={{.Limit}}">
+                    Page précédente
+                </a>
             {{end}}
 
             <span>Page {{.Page}}</span>
 
-            <a href="/?page={{plus .Page 1}}&limit={{.Limit}}">Page suivante</a>
+            <a href="/?tag={{.Tag}}&page={{plus .Page 1}}&limit={{.Limit}}">
+                Page suivante
+            </a>
         </div>
         {{end}}
 
