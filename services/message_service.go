@@ -50,3 +50,18 @@ func (s *MessageService) CreateMessage(content string, threadId int, userId int)
 func (s *MessageService) GetMessagesByThreadId(threadId int, sort string, limit int, offset int) ([]models.Message, error) {
 	return s.messageRepository.ReadByThreadId(threadId, sort, limit, offset)
 }
+
+// supprime un message si l'utilisateur est son auteur.
+func (s *MessageService) DeleteMessage(id int, userId int) error {
+	message, err := s.messageRepository.ReadById(id)
+
+	if err != nil {
+		return errors.New("message introuvable")
+	}
+
+	if message.UserId != userId {
+		return errors.New("vous n'avez pas le droit de supprimer ce message")
+	}
+
+	return s.messageRepository.DeleteMessage(id)
+}

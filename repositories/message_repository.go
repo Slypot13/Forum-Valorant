@@ -21,12 +21,7 @@ func (r *MessageRepository) CreateMessage(message models.Message) error {
 	VALUES (?, ?, ?)
 	`
 
-	_, err := r.db.Exec(
-		query,
-		message.Content,
-		message.ThreadId,
-		message.UserId,
-	)
+	_, err := r.db.Exec(query, message.Content, message.ThreadId, message.UserId)
 
 	return err
 }
@@ -96,4 +91,35 @@ func (r *MessageRepository) ReadByThreadId(threadId int, sort string, limit int,
 	}
 
 	return messages, nil
+}
+
+func (r *MessageRepository) ReadById(id int) (models.Message, error) {
+	var message models.Message
+
+	query := `
+	SELECT id, content, thread_id, user_id, created_at
+	FROM messages
+	WHERE id = ?
+	`
+
+	err := r.db.QueryRow(query, id).Scan(
+		&message.Id,
+		&message.Content,
+		&message.ThreadId,
+		&message.UserId,
+		&message.CreatedAt,
+	)
+
+	return message, err
+}
+
+func (r *MessageRepository) DeleteMessage(id int) error {
+	query := `
+	DELETE FROM messages
+	WHERE id = ?
+	`
+
+	_, err := r.db.Exec(query, id)
+
+	return err
 }
