@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
+	"forum-valorant/models"
 
 	"forum-valorant/config"
 	"forum-valorant/controllers"
@@ -11,15 +13,18 @@ import (
 	"forum-valorant/services"
 )
 
+type HomePage struct {
+	Threads []models.Thread
+	Limit   string
+	Page    int
+}
 
 func main() {
 	config.LoadEnv()
 
-	// Initialise la base de données
 	db := config.InitDB()
 	defer db.Close()
 
-	// Connecte les couches
 	userRepository := repositories.InitUserRepository(db)
 	userService := services.InitUserService(userRepository)
 	authController := controllers.InitAuthController(userService)
@@ -119,27 +124,66 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
-	// Page d'accueil
+	// Page d'accueil avec pagination
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
 			return
 		}
 
-		threads, err := threadService.GetVisibleThreads()
+		page := 1
+		limit := 10
+		limitString := r.URL.Query().Get("limit")
+		pageString := r.URL.Query().Get("page")
+
+		if pageString != "" {
+			value, err := strconv.Atoi(pageString)
+
+			if err == nil && value > 0 {
+				page = value
+			}
+		}
+
+		if limitString == "20" {
+			limit = 20
+		} else if limitString == "30" {
+			limit = 30
+		} else if limitString == "all" {
+			limit = 100000
+		} else {
+			limitString = "10"
+		}
+
+		offset := (page - 1) * limit
+
+		threads, err := threadService.GetVisibleThreadsPaginated(limit, offset)
 
 		if err != nil {
 			http.Error(w, "Erreur lors du chargement des sujets", http.StatusInternalServerError)
 			return
 		}
 
-		tmpl := template.Must(template.ParseFiles("templates/index.html"))
-		tmpl.Execute(w, threads)
+		data := HomePage{
+			Threads: threads,
+			Limit:   limitString,
+			Page:    page,
+		}
+
+		funcMap := template.FuncMap{
+	"plus": func(a int, b int) int {
+		return a + b
+	},
+	"minus": func(a int, b int) int {
+		return a - b
+	},
+}
+
+tmpl := template.Must(template.New("index.html").Funcs(funcMap).ParseFiles("templates/index.html"))
+		tmpl.Execute(w, data)
 	})
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	// Lance le serveur
 	fmt.Println("Serveur lancé sur http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }

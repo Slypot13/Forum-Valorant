@@ -336,3 +336,25 @@ body::before {
 .sort-bar a:hover {
     background-color: #374151;
 }
+
+.pagination-bar {
+    background-color: rgba(17, 24, 39, 0.92);
+    border: 1px solid #263241;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.pagination-bar a {
+    color: #ff4655;
+    text-decoration: none;
+    background-color: #263241;
+    padding: 6px 10px;
+    border-radius: 5px;
+}
+
+.pagination-bar a:hover {
+    background-color: #374151;
+}

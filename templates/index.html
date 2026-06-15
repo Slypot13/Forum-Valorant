@@ -35,9 +35,17 @@
             <a href="/threads/create">Créer une nouvelle discussion</a>
         </div>
 
-        {{if .}}
+        <div class="pagination-bar">
+            <span>Afficher :</span>
+            <a href="/?limit=10">10</a>
+            <a href="/?limit=20">20</a>
+            <a href="/?limit=30">30</a>
+            <a href="/?limit=all">Tous</a>
+        </div>
 
-            {{range .}}
+        {{if .Threads}}
+
+            {{range .Threads}}
             <article class="post-card">
                 <div class="votes">
                     <span>▲</span>
@@ -69,6 +77,18 @@
                 <a href="/threads/create">Créer le premier sujet</a>
             </div>
 
+        {{end}}
+
+        {{if ne .Limit "all"}}
+        <div class="pagination-bar">
+            {{if gt .Page 1}}
+                <a href="/?page={{minus .Page 1}}&limit={{.Limit}}">Page précédente</a>
+            {{end}}
+
+            <span>Page {{.Page}}</span>
+
+            <a href="/?page={{plus .Page 1}}&limit={{.Limit}}">Page suivante</a>
+        </div>
         {{end}}
 
     </main>

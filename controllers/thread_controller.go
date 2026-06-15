@@ -25,9 +25,11 @@ func InitThreadController(threadService *services.ThreadService, messageService 
 
 // données envoyées à la page détail.
 type ThreadDetailPage struct {
-	Thread   models.Thread
-	Messages []models.Message
-	Sort     string
+	Thread      models.Thread
+	Messages    []models.Message
+	Sort        string
+	Limit       string
+	MessagePage int
 }
 
 // affiche la page de création.
@@ -86,7 +88,32 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 
 	sort := r.URL.Query().Get("sort")
 
-	messages, err := c.messageService.GetMessagesByThreadId(id, sort)
+	messagePage := 1
+	limit := 10
+	limitString := r.URL.Query().Get("limit")
+	pageString := r.URL.Query().Get("messagePage")
+
+	if pageString != "" {
+		value, err := strconv.Atoi(pageString)
+
+		if err == nil && value > 0 {
+			messagePage = value
+		}
+	}
+
+	if limitString == "20" {
+		limit = 20
+	} else if limitString == "30" {
+		limit = 30
+	} else if limitString == "all" {
+		limit = 100000
+	} else {
+		limitString = "10"
+	}
+
+	offset := (messagePage - 1) * limit
+
+	messages, err := c.messageService.GetMessagesByThreadId(id, sort, limit, offset)
 
 	if err != nil {
 		http.Error(w, "Erreur lors du chargement des messages", http.StatusInternalServerError)
@@ -94,12 +121,23 @@ func (c *ThreadController) ShowThreadDetail(w http.ResponseWriter, r *http.Reque
 	}
 
 	page := ThreadDetailPage{
-		Thread:   thread,
-		Messages: messages,
-		Sort:     sort,
+		Thread:      thread,
+		Messages:    messages,
+		Sort:        sort,
+		Limit:       limitString,
+		MessagePage: messagePage,
 	}
 
-	tmpl, err := template.ParseFiles("templates/thread_detail.html")
+	funcMap := template.FuncMap{
+		"plus": func(a int, b int) int {
+			return a + b
+		},
+		"minus": func(a int, b int) int {
+			return a - b
+		},
+	}
+
+	tmpl, err := template.New("thread_detail.html").Funcs(funcMap).ParseFiles("templates/thread_detail.html")
 
 	if err != nil {
 		http.Error(w, "Erreur chargement template", http.StatusInternalServerError)

@@ -7,7 +7,7 @@ import (
 	"forum-valorant/repositories"
 )
 
-//contient la logique des sujets.
+// contient la logique des sujets.
 type ThreadService struct {
 	threadRepository *repositories.ThreadRepository
 }
@@ -46,12 +46,17 @@ func (s *ThreadService) GetVisibleThreads() ([]models.Thread, error) {
 	return s.threadRepository.ReadVisibleThreads()
 }
 
+// liste les sujets actifs avec pagination.
+func (s *ThreadService) GetVisibleThreadsPaginated(limit int, offset int) ([]models.Thread, error) {
+	return s.threadRepository.ReadVisibleThreadsPaginated(limit, offset)
+}
+
 // retourne un sujet par son ID.
 func (s *ThreadService) GetThreadById(id int) (models.Thread, error) {
 	return s.threadRepository.ReadById(id)
 }
 
-//vérifie les droits et modifie le sujet.
+// vérifie les droits et modifie le sujet.
 func (s *ThreadService) UpdateThread(id int, title string, content string, userId int, role string) error {
 	thread, err := s.threadRepository.ReadById(id)
 

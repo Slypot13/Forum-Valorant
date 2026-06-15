@@ -31,7 +31,7 @@ func (r *MessageRepository) CreateMessage(message models.Message) error {
 	return err
 }
 
-func (r *MessageRepository) ReadByThreadId(threadId int, sort string) ([]models.Message, error) {
+func (r *MessageRepository) ReadByThreadId(threadId int, sort string, limit int, offset int) ([]models.Message, error) {
 	var messages []models.Message
 
 	orderBy := "m.created_at DESC"
@@ -64,9 +64,11 @@ func (r *MessageRepository) ReadByThreadId(threadId int, sort string) ([]models.
 	LEFT JOIN reactions r ON m.id = r.message_id
 	WHERE m.thread_id = ?
 	GROUP BY m.id, m.content, m.thread_id, m.user_id, m.created_at
-	ORDER BY ` + orderBy
+	ORDER BY ` + orderBy + `
+	LIMIT ? OFFSET ?
+	`
 
-	rows, err := r.db.Query(query, threadId)
+	rows, err := r.db.Query(query, threadId, limit, offset)
 
 	if err != nil {
 		return messages, err

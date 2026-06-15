@@ -49,17 +49,26 @@
         <div class="sort-bar">
             <span>Trier par :</span>
 
-            <a href="/threads/view?id={{.Thread.Id}}">
+            <a href="/threads/view?id={{.Thread.Id}}&limit={{.Limit}}">
                 Plus récent
             </a>
 
-            <a href="/threads/view?id={{.Thread.Id}}&sort=oldest">
+            <a href="/threads/view?id={{.Thread.Id}}&sort=oldest&limit={{.Limit}}">
                 Plus ancien
             </a>
 
-            <a href="/threads/view?id={{.Thread.Id}}&sort=popular">
+            <a href="/threads/view?id={{.Thread.Id}}&sort=popular&limit={{.Limit}}">
                 Popularité
             </a>
+        </div>
+
+        <div class="pagination-bar">
+            <span>Afficher :</span>
+
+            <a href="/threads/view?id={{.Thread.Id}}&sort={{.Sort}}&limit=10">10</a>
+            <a href="/threads/view?id={{.Thread.Id}}&sort={{.Sort}}&limit=20">20</a>
+            <a href="/threads/view?id={{.Thread.Id}}&sort={{.Sort}}&limit=30">30</a>
+            <a href="/threads/view?id={{.Thread.Id}}&sort={{.Sort}}&limit=all">Tous</a>
         </div>
 
         {{if .Messages}}
@@ -96,6 +105,22 @@
 
             <p class="empty-message">Aucun message pour le moment.</p>
 
+        {{end}}
+
+        {{if ne .Limit "all"}}
+        <div class="pagination-bar">
+            {{if gt .MessagePage 1}}
+                <a href="/threads/view?id={{.Thread.Id}}&sort={{.Sort}}&limit={{.Limit}}&messagePage={{minus .MessagePage 1}}">
+                    Page précédente
+                </a>
+            {{end}}
+
+            <span>Page {{.MessagePage}}</span>
+
+            <a href="/threads/view?id={{.Thread.Id}}&sort={{.Sort}}&limit={{.Limit}}&messagePage={{plus .MessagePage 1}}">
+                Page suivante
+            </a>
+        </div>
         {{end}}
     </section>
 

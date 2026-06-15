@@ -46,7 +46,7 @@ func (s *MessageService) CreateMessage(content string, threadId int, userId int)
 	return s.messageRepository.CreateMessage(message)
 }
 
-// liste les messages d'un sujet avec un tri.
-func (s *MessageService) GetMessagesByThreadId(threadId int, sort string) ([]models.Message, error) {
-	return s.messageRepository.ReadByThreadId(threadId, sort)
+// liste les messages d'un sujet avec tri et pagination.
+func (s *MessageService) GetMessagesByThreadId(threadId int, sort string, limit int, offset int) ([]models.Message, error) {
+	return s.messageRepository.ReadByThreadId(threadId, sort, limit, offset)
 }

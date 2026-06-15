@@ -11,7 +11,7 @@ type ThreadRepository struct {
 	db *sql.DB
 }
 
-//  initialise le dépôt.
+// initialise le dépôt.
 func InitThreadRepository(db *sql.DB) *ThreadRepository {
 	return &ThreadRepository{db}
 }
@@ -45,7 +45,7 @@ func (r *ThreadRepository) CreateThread(thread models.Thread) (int, error) {
 	return int(id), nil
 }
 
-//récupère les sujets non archivés.
+// récupère les sujets non archivés.
 func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
 	var threads []models.Thread
 
@@ -57,6 +57,48 @@ func (r *ThreadRepository) ReadVisibleThreads() ([]models.Thread, error) {
 	`
 
 	rows, err := r.db.Query(query)
+
+	if err != nil {
+		return threads, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var thread models.Thread
+
+		err := rows.Scan(
+			&thread.Id,
+			&thread.Title,
+			&thread.Content,
+			&thread.Status,
+			&thread.UserId,
+			&thread.CreatedAt,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		threads = append(threads, thread)
+	}
+
+	return threads, nil
+}
+
+// récupère les sujets avec pagination.
+func (r *ThreadRepository) ReadVisibleThreadsPaginated(limit int, offset int) ([]models.Thread, error) {
+	var threads []models.Thread
+
+	query := `
+	SELECT id, title, content, status, user_id, created_at
+	FROM threads
+	WHERE status != 'archivé'
+	ORDER BY created_at DESC
+	LIMIT ? OFFSET ?
+	`
+
+	rows, err := r.db.Query(query, limit, offset)
 
 	if err != nil {
 		return threads, err
@@ -126,7 +168,7 @@ func (r *ThreadRepository) UpdateThread(thread models.Thread) error {
 	return err
 }
 
-//supprime un sujet.
+// supprime un sujet.
 func (r *ThreadRepository) DeleteThread(id int) error {
 	query := `
 	DELETE FROM threads
