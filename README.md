@@ -1,10 +1,10 @@
-# 🎮 ValoRoom
+# ValoRoom
 
-## 📌 Présentation
+## Présentation
 
 ValoRoom est un forum communautaire inspiré de Reddit, dédié à l'univers du jeu Valorant.
 
-## 🚀 Fonctionnalités
+## Fonctionnalités
 
 * Gestion des utilisateurs
 * Gestion des fils de discussion
@@ -15,9 +15,8 @@ ValoRoom est un forum communautaire inspiré de Reddit, dédié à l'univers du 
 * Catégories
 * Recherche
 * Administration
----
 
-## 🏗️ Architecture du projet
+## Architecture du projet
 
 Le projet suit une architecture MVC :
 
@@ -41,9 +40,8 @@ Gèrent les requêtes HTTP et les interactions avec les vues.
 
 Pages HTML affichées aux utilisateurs.
 
----
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 * Go (Golang)
 * HTML
@@ -53,9 +51,8 @@ Pages HTML affichées aux utilisateurs.
 * Git
 * GitHub
 
----
 
-## 📂 Base de données
+## Base de données
 
 Principales tables :
 
@@ -66,9 +63,8 @@ Principales tables :
 * tags
 * thread_tags
 
----
 
-## ▶️ Lancer le projet
+## Lancer le projet
 
 ### Installer les dépendances
 
@@ -90,6 +86,6 @@ http://localhost:8080
 
 ---
 
-## 👨‍💻 Auteurs
+## Auteurs
 
 POTTIER SYLVAIN
